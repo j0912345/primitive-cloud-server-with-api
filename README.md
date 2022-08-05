@@ -1,3 +1,6 @@
 # what is this
-A private server I'm working on. hopefully I can get a domain and host it there.  
-if you want to get access DM me on discord (I'm !j0#2055).
+a primitive cloud server with an API.  
+someone will hopefully find it useful for a project.  
+  
+# why are you making this?
+it's for a private cloud server idea I had.
