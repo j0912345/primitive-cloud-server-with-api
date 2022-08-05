@@ -101,6 +101,19 @@ class CloudServer {
             project.save()
           }
           break
+        // only used by api users
+        // TODO: look at using api keys per project for securtiy/privacy reasons
+        case 'api.get.var':
+          if (project) {
+            // propbably not the best way to do this but I'm new to ws
+            var_to_send = project.variables[message.name]
+            project.announce(ws,[{
+              method: 'set',
+              name: message.name,
+              value: var_to_send
+            }])
+          }
+          break
         case 'rename':
           if (project && !this.lockVars) {
             project.variables[message.new_name] = project.variables[message.name]
