@@ -104,15 +104,22 @@ class CloudServer {
         // only used by api users
         // TODO: look at using api keys per project for securtiy/privacy reasons
         case 'api.get.var':
-          if (project) {
-            // propbably not the best way to do this but I'm new to ws
-            var_to_send = project.variables[message.name]
-            project.announce(ws,[{
-              method: 'set',
-              name: message.name,
-              value: var_to_send
-            }])
-          }
+          console.log("api.get.var")
+          // this is so that getting vars from the api isn't annoying as all hell because all cloud vars internally have "☁ " as their(?) prefix
+          message.name = "☁ "+message.name
+
+          this.getProject(message.project_id).then(projectData => {
+            console.log(projectData)
+            if (projectData) {
+              project = projectData
+
+              console.log(project.variables)
+              console.log(message.name)
+              console.log(project.variables[message.name])
+
+              ws.send(project.variables[message.name])
+          }})
+
           break
         case 'rename':
           if (project && !this.lockVars) {
