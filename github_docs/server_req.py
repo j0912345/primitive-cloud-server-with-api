@@ -2,7 +2,7 @@ from warnings import warn
 import websocket
 import json
 
-def server_req(ws_server_requests: dict, project_id, uri=uri_to_talk_to, ignore_timeout=True, timeout=3):
+def server_req(ws_server_requests: dict, project_id, uri="ws://localhost:8002/", ignore_timeout=True, timeout=3):
     ws = websocket.WebSocket()
     ws_server_requests["project_id"] = project_id
     ws.connect(uri, timeout=timeout)
