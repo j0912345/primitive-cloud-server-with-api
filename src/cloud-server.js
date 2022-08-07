@@ -91,6 +91,7 @@ class CloudServer {
           break
         case 'create':
         case 'set':
+          console.log(project.variables)
           if (project) {
             project.variables[message.name] = message.value
             project.announce(ws, [{
@@ -98,7 +99,7 @@ class CloudServer {
               name: message.name,
               value: message.value
             }])
-            project.save()
+            console.log(project.save())
           }
           break
         // only used by api users
@@ -109,7 +110,7 @@ class CloudServer {
           message.name = "☁ "+message.name
 
           this.getProject(message.project_id).then(projectData => {
-            console.log(projectData)
+//            console.log(projectData)
             if (projectData) {
               project = projectData
 
