@@ -4,9 +4,17 @@ const internalIp = require('internal-ip')
 const express = require('express')
 const expressWs = require('express-ws')
 const colours = require('colors/safe')
+const router = express.Router();
 
 const CloudServer = require('./cloud-server.js')
 const fsUtil = require('./util.js')
+
+function cal_cookie(){
+  rand_data = fetch("https://www.random.org/integers/?num=1024&min=1&max=100&format=plain&col=1&rnd=new&base=10").then(()=>{
+    console.log(rand_data.Text)
+  })
+}
+let uid_url = path.resolve(__dirname,"../get_user_id.html")
 
 async function startServer ({ port, lockVars, perMessageDeflate }) {
   const app = express()
@@ -30,9 +38,15 @@ async function startServer ({ port, lockVars, perMessageDeflate }) {
 
   app.ws('/', cloudServer.handleWsConnection)
 
-  app.use((req, res) => {
-    res.status(404).sendFile(path.resolve(__dirname, '../static/404.html'))
+  app.post(uid_url, (req, res) => {
+    console.log(req)
+    res.sendFile(uid_url)
+    cal_cookie()
   })
+
+/*  app.use((req, res) => {
+    res.status(404).sendFile(path.resolve(__dirname, '../static/404.html'))
+  })*/
 
   app.listen(port, async () => {
     console.log(colours.green('I\'m now running your cloud server!'))
