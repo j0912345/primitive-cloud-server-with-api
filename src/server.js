@@ -4,50 +4,57 @@ const internalIp = require('internal-ip')
 const express = require('express')
 const expressWs = require('express-ws')
 const colours = require('colors/safe')
-const router = express.Router();
+//const router = express.Router();
 
 const CloudServer = require('./cloud-server.js')
 const fsUtil = require('./util.js')
 
-function cal_cookie(){
+/*function cal_cookie(){
   rand_data = fetch("https://www.random.org/integers/?num=1024&min=1&max=100&format=plain&col=1&rnd=new&base=10").then(()=>{
     console.log(rand_data.Text)
   })
 }
-let uid_url = path.resolve(__dirname,"../get_user_id.html")
+function get_user_id(){
+  cal_cookie()
+}
+let uid_url = "../static/"+ "get_user_id.html"
+console.log(uid_url)*/
+console.log("CON*.LOG TEST")
+
+
 
 async function startServer ({ port, lockVars, perMessageDeflate }) {
   const app = express()
   const cloudServer = new CloudServer({ lockVars })
+  // the http stuff is handled by python because python can handle post requests without my brain exploding to get it working,
+  // unlike express here, but we still need it for the ws connections so express gets to host an emtpy folder for http because python will do the real hosting.
+  // python will gen api keys/user IDs and javascript will read those things from a file.
+  // also because i can't figure out how to disable only the http hosting python will host on a different port
 
+  app.set("views", __dirname+"../empty_express_http_dir")
   app.disable('x-powered-by')
+//  app.disable('express')
   expressWs(app, undefined, {
     wsOptions: { perMessageDeflate }
   })
-
-  const oldIndexHtmlPath = path.resolve(__dirname, '../index.html')
+  // only for old installs of the main branch
+/*  const oldIndexHtmlPath = path.resolve(__dirname, '../index.html')
   if (await fsUtil.exists(oldIndexHtmlPath)) {
     app.get('/', (req, res, next) => {
       res.sendFile(oldIndexHtmlPath)
     })
   }
-
+  
   app.use(express.static(path.resolve(__dirname, '../static/'), {
     extensions: ['html', 'htm']
-  }))
+  }))*/
+
 
   app.ws('/', cloudServer.handleWsConnection)
-
-  app.post(uid_url, (req, res) => {
-    console.log(req)
-    res.sendFile(uid_url)
-    cal_cookie()
-  })
 
 /*  app.use((req, res) => {
     res.status(404).sendFile(path.resolve(__dirname, '../static/404.html'))
   })*/
-
   app.listen(port, async () => {
     console.log(colours.green('I\'m now running your cloud server!'))
     console.log('You can access it...')
@@ -60,7 +67,7 @@ async function startServer ({ port, lockVars, perMessageDeflate }) {
     if (ip) {
       console.log(`  • publicly at ${colours.blue(`ws://${ip}:${port}/`)}, but ONLY if you've set up port forwarding on your router`)
     }
-    console.log(colours.yellow(`I'm also serving files from the static/ folder, which you can access in your browser at ${colours.blue(`http://localhost:${port}/`)}.`))
+    console.log(colours.yellow(`python is also serving files from the static/ folder, which you can access in your browser at ${colours.blue(`http://localhost:${port}/`)}.`))
     console.log(colours.red('Press control+C to stop the server.'))
   })
 }
