@@ -1,7 +1,7 @@
 # Cloud variable data
 cloud-vars/*.json
 # webserver secret key
-src/pySERVER/key_dont_share_with_others.json
+*key_dont_share_with_others.json
 # Logs
 logs
 *.log
