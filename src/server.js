@@ -23,13 +23,13 @@ console.log("CON*.LOG TEST")
 
 
 
-async function startServer ({ port, lockVars, perMessageDeflate }) {
+async function startServer ({ port, lockVars, perMessageDeflate, python_port }) {
   const app = express()
   const cloudServer = new CloudServer({ lockVars })
   // the http stuff is handled by python because python can handle post requests without my brain exploding to get it working,
   // unlike express here, but we still need it for the ws connections so express gets to host an emtpy folder for http because python will do the real hosting.
   // python will gen api keys/user IDs and javascript will read those things from a file.
-  // also because i can't figure out how to disable only the http hosting python will host on a different port
+  // also because i can't figure out how to disable only http in express (you probably just can't) so python will be on port 8003
 
   app.set("views", __dirname+"../empty_express_http_dir")
   app.disable('x-powered-by')
@@ -67,7 +67,7 @@ async function startServer ({ port, lockVars, perMessageDeflate }) {
     if (ip) {
       console.log(`  • publicly at ${colours.blue(`ws://${ip}:${port}/`)}, but ONLY if you've set up port forwarding on your router`)
     }
-    console.log(colours.yellow(`python is also serving files from the static/ folder, which you can access in your browser at ${colours.blue(`http://localhost:${port}/`)}.`))
+    console.log(colours.yellow(`python is also serving files from the static/ folder, which you can access in your browser at ${colours.blue(`http://localhost:${python_port}/`)}.`))
     console.log(colours.red('Press control+C to stop the server.'))
   })
 }

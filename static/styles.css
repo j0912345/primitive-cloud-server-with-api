@@ -1,6 +1,6 @@
-/* CSS shamelessly taken from https://www.example.com/ */
+/* this CSS was (mostly) shamelessly taken from https://www.example.com/ */
 body {
-  background-color: #f0f0f2;
+  background-color: #000000;
   margin: 0;
   padding: 0;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI',
@@ -36,4 +36,11 @@ code {
     width: auto;
     box-shadow: none;
   }
+}
+warntxt{
+  color: #fffb00;
+  font-size: 40px;
+}
+dum_var{
+  font-size: 0px;
 }
