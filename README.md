@@ -1,4 +1,5 @@
 # this is wrong, i will fix it later!
+i need to edit this readme, it's the one from the main fork.
 ## primitive-cloud-server
 
 A primitive Node server for Scratch 3.0 cloud variables; it's not made for large-scale projects and can easily be tricked by those pesky JavaScript programmers.
