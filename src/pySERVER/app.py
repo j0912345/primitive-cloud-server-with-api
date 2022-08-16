@@ -1,6 +1,6 @@
 from time import time
 from tokenize import Triple
-from flask import Flask, jsonify, render_template, request, make_response, Response
+from flask import Flask, jsonify, render_template, request, make_response, Response, redirect
 import sys
 import json
 import secrets as secr
@@ -23,8 +23,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///site.db"
 
 
 # cookie stuff
-def get_uid_cookie(resp: Response, req):
-    if request.cookies.get("user_api_id"):
+def get_uid_cookie(req):
+    print(request.cookies.get("user_api_id"))
+    if request.cookies.get("user_api_id") != None:
         return request.cookies.get("user_api_id")
     else:
         seed = good_random()
@@ -34,10 +35,11 @@ def get_uid_cookie(resp: Response, req):
 
 
 # helpful functions
-def create_long_random_string(seed, leng=4):
+# 512 because that looks like the cookie size limit
+def create_long_random_string(seed, leng=512):
     rand.seed(seed)
     rand_string = ""
-    char_list = "asdf"
+    char_list = "1234567890!$#%^&*()_-=+[]{}\\|*/;:'\"<>,.?`~qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
     char_list_len = len(char_list)-1
     for i in range(0, leng):
         rand_string += char_list[rand.randint(0, char_list_len)]
@@ -62,12 +64,31 @@ def index_page():
 @app.route("/get_user_id")
 def cookie_page():
     cookie = 'click the button to get the id'
-    resp = make_response(render_template("get_user_id.html"))
     args = request.args
+
     if args.get('get_uid'):
-        cookie = get_uid_cookie(resp, request)
-        resp.set_cookie('user_api_id', cookie)
+        cookie = get_uid_cookie(request)
+        resp = make_response(render_template("get_user_id.html", c_uid=cookie))
+        resp.set_cookie('user_api_id', cookie, expires=32523383054)
+    
+        return resp
     return render_template("get_user_id.html", c_uid=cookie)
+
+
+@app.route("/generate_api_keys", methods=["get", "post"])
+def gen_api_keys_page():
+    if request.method.lower() == "post":
+        api_key_file = __file__+"/../../../api_keys/test.txt"
+#        with open(api_key_file, "w") as tf:
+#            tf.write("TEST TEXT STRING")
+        args = request.args
+        print(args)
+        print(request.form.to_dict(flat=False))
+        print(request.data)
+        if args.get('gen_key') and args.get('gen_key') == "true":
+            pass
+
+    return render_template("generate_api_keys.html")
 
 argv = sys.argv
 if __name__ == '__main__' or (len(argv) > 2 and argv[2] == True):
